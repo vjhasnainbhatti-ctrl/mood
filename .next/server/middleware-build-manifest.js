@@ -29,6 +29,11 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/dashboard/achievements.js"
     ],
+    "/dashboard/ai-detect": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/dashboard/ai-detect.js"
+    ],
     "/dashboard/stats": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
