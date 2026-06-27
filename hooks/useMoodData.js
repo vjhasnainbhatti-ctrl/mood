@@ -3,12 +3,13 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/context/AuthContext'
 
 export function useMoodData() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [moodEntries, setMoodEntries] = useState([])
   const [activities, setActivities] = useState([])
   const [challenges, setChallenges] = useState([])
   const [achievements, setAchievements] = useState([])
   const [loading, setLoading] = useState(true)
+  const [initialized, setInitialized] = useState(false)
 
   const fetchMoodEntries = useCallback(async () => {
     if (!user) return
@@ -35,11 +36,22 @@ export function useMoodData() {
   }, [user])
 
   useEffect(() => {
-    if (user) {
+    if (authLoading) return
+    if (user && !initialized) {
       setLoading(true)
-      Promise.all([fetchMoodEntries(), fetchActivities(), fetchChallenges(), fetchAchievements()]).finally(() => setLoading(false))
+      Promise.all([fetchMoodEntries(), fetchActivities(), fetchChallenges(), fetchAchievements()])
+        .finally(() => {
+          setLoading(false)
+          setInitialized(true)
+        })
+    } else if (!user) {
+      setLoading(false)
+      setMoodEntries([])
+      setActivities([])
+      setChallenges([])
+      setAchievements([])
     }
-  }, [user, fetchMoodEntries, fetchActivities, fetchChallenges, fetchAchievements])
+  }, [user, authLoading, initialized, fetchMoodEntries, fetchActivities, fetchChallenges, fetchAchievements])
 
   const saveMoodEntry = async (mood, previousMood = null, moodImproved = null) => {
     if (!user) return null

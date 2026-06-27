@@ -9,6 +9,7 @@ import StatsCards from '@/components/dashboard/StatsCards'
 import MoodHistory from '@/components/dashboard/MoodHistory'
 import { useTheme } from '@/context/ThemeContext'
 import { useMoodData } from '@/hooks/useMoodData'
+import { useAuth } from '@/context/AuthContext'
 import { moodThemes } from '@/lib/mood-themes'
 import Button from '@/components/ui/Button'
 import GlassCard from '@/components/ui/GlassCard'
@@ -16,8 +17,9 @@ import GlassCard from '@/components/ui/GlassCard'
 const STEPS = { SELECTION: 'selection', SUGGESTIONS: 'suggestions', ACTIVITY: 'activity', FEEDBACK: 'feedback', RECHECK: 'recheck', COMPLETE: 'complete' }
 
 export default function Dashboard() {
+  const { user, loading: authLoading } = useAuth()
   const { setCurrentMood } = useTheme()
-  const { moodEntries, challenges, saveMoodEntry, saveActivity, completeActivity, completeChallenge, createDailyChallenge, awardAchievement, calculateStats } = useMoodData()
+  const { moodEntries, challenges, saveMoodEntry, saveActivity, completeActivity, completeChallenge, createDailyChallenge, awardAchievement, calculateStats, loading: dataLoading } = useMoodData()
   const [step, setStep] = useState(STEPS.SELECTION)
   const [currentMood, setCurrentMoodState] = useState(null)
   const [selectedActivity, setSelectedActivity] = useState(null)
@@ -27,7 +29,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (currentMood) {
-      createDailyChallenge(currentMood, moodThemes[currentMood].challenge).then(setCurrentChallenge)
+      createDailyChallenge(currentMood, moodThemes[currentMood]?.challenge || {}).then(setCurrentChallenge)
     }
   }, [currentMood, createDailyChallenge])
 
@@ -75,6 +77,27 @@ export default function Dashboard() {
   }
 
   const stats = calculateStats()
+
+  if (authLoading || dataLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="text-6xl mb-4"
+          >
+            🌈
+          </motion.div>
+          <p className="text-gray-600 dark:text-gray-400">Loading your dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
 
   return (
     <div className="space-y-6">
