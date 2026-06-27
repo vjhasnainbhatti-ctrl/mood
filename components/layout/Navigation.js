@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/context/AuthContext'
 import { useTheme } from '@/context/ThemeContext'
@@ -18,6 +18,7 @@ const navItems = [
 ]
 
 export default function Navigation() {
+  const pathname = usePathname()
   const router = useRouter()
   const { user, profile, signOut } = useAuth()
   const { darkMode, setDarkMode } = useTheme()
@@ -39,7 +40,7 @@ export default function Navigation() {
             </div>
             <div className="hidden md:flex items-center gap-1">
               {navItems.map((item) => {
-                const isActive = router.pathname === item.href
+                const isActive = pathname === item.href
                 return (
                   <Link key={item.href} href={item.href}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' : 'text-gray-600 dark:text-gray-300 hover:bg-white/20'}`}>
@@ -76,7 +77,7 @@ export default function Navigation() {
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="md:hidden backdrop-blur-xl bg-white/20 dark:bg-gray-900/80 border-b border-white/20">
             <div className="px-4 py-4 space-y-2">
               {navItems.map((item) => {
-                const isActive = router.pathname === item.href
+                const isActive = pathname === item.href
                 return (
                   <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white' : 'text-gray-700 dark:text-gray-200 hover:bg-white/20'}`}>

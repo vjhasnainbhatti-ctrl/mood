@@ -1,11 +1,11 @@
 'use client'
 
-import Head from 'next/head'
-import { useAuth } from '@/context/AuthContext'
+import { Providers } from './providers'
 import AuthPage from '@/components/auth/AuthPage'
-import Dashboard from './dashboard'
+import Dashboard from './dashboard/page'
+import { useAuth } from '@/context/AuthContext'
 
-export default function Home() {
+function HomeContent() {
   const { user, loading } = useAuth()
 
   if (loading) {
@@ -19,10 +19,13 @@ export default function Home() {
     )
   }
 
+  return user ? <Dashboard /> : <AuthPage />
+}
+
+export default function Home() {
   return (
-    <>
-      <Head><title>Moodify - Mood Improvement Assistant</title></Head>
-      {user ? <Dashboard /> : <AuthPage />}
-    </>
+    <Providers>
+      <HomeContent />
+    </Providers>
   )
 }

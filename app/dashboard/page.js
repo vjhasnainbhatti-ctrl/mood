@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
 import { motion, AnimatePresence } from 'framer-motion'
-import DashboardLayout from '@/components/layout/DashboardLayout'
 import MoodSelection from '@/components/mood/MoodSelection'
 import MoodSuggestions from '@/components/mood/MoodSuggestions'
 import { ActivityDetail, ActivityFeedback, MoodRecheck, DailyChallenge } from '@/components/mood/ActivityFlow'
@@ -79,36 +77,33 @@ export default function Dashboard() {
   const stats = calculateStats()
 
   return (
-    <DashboardLayout>
-      <Head><title>Dashboard - Moodify</title></Head>
-      <div className="space-y-6">
-        <StatsCards stats={stats} />
-        {currentChallenge && step === STEPS.SUGGESTIONS && (
-          <DailyChallenge currentMood={currentMood} challenge={{ title: currentChallenge.challenge_title, description: currentChallenge.challenge_description }} completed={currentChallenge.completed} onCompleteChallenge={handleCompleteChallenge} />
-        )}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <AnimatePresence mode="wait">
-              {step === STEPS.SELECTION && <MoodSelection key="selection" onSelectMood={handleSelectMood} />}
-              {step === STEPS.SUGGESTIONS && <MoodSuggestions key="suggestions" currentMood={currentMood} onSelectActivity={handleSelectActivity} />}
-              {step === STEPS.ACTIVITY && <ActivityDetail key="activity" activity={selectedActivity} mood={currentMood} onComplete={handleActivityComplete} />}
-              {step === STEPS.FEEDBACK && <ActivityFeedback key="feedback" activity={selectedActivity} mood={currentMood} onFeedback={handleFeedback} />}
-              {step === STEPS.RECHECK && <MoodRecheck key="recheck" previousMood={currentMood} onMoodSelect={handleMoodRecheck} onSkip={handleSkipRecheck} />}
-              {step === STEPS.COMPLETE && (
-                <motion.div key="complete" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-                  <GlassCard className="p-8">
-                    <div className="text-6xl mb-4">🎉</div>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Great Job!</h2>
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">You completed the mood check-in. Keep tracking your mood!</p>
-                    <Button onClick={handleStartOver} size="lg">Start New Check-in</Button>
-                  </GlassCard>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <MoodHistory entries={moodEntries} />
+    <div className="space-y-6">
+      <StatsCards stats={stats} />
+      {currentChallenge && step === STEPS.SUGGESTIONS && (
+        <DailyChallenge currentMood={currentMood} challenge={{ title: currentChallenge.challenge_title, description: currentChallenge.challenge_description }} completed={currentChallenge.completed} onCompleteChallenge={handleCompleteChallenge} />
+      )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <AnimatePresence mode="wait">
+            {step === STEPS.SELECTION && <MoodSelection key="selection" onSelectMood={handleSelectMood} />}
+            {step === STEPS.SUGGESTIONS && <MoodSuggestions key="suggestions" currentMood={currentMood} onSelectActivity={handleSelectActivity} />}
+            {step === STEPS.ACTIVITY && <ActivityDetail key="activity" activity={selectedActivity} mood={currentMood} onComplete={handleActivityComplete} />}
+            {step === STEPS.FEEDBACK && <ActivityFeedback key="feedback" activity={selectedActivity} mood={currentMood} onFeedback={handleFeedback} />}
+            {step === STEPS.RECHECK && <MoodRecheck key="recheck" previousMood={currentMood} onMoodSelect={handleMoodRecheck} onSkip={handleSkipRecheck} />}
+            {step === STEPS.COMPLETE && (
+              <motion.div key="complete" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+                <GlassCard className="p-8">
+                  <div className="text-6xl mb-4">🎉</div>
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Great Job!</h2>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">You completed the mood check-in. Keep tracking your mood!</p>
+                  <Button onClick={handleStartOver} size="lg">Start New Check-in</Button>
+                </GlassCard>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+        <MoodHistory entries={moodEntries} />
       </div>
-    </DashboardLayout>
+    </div>
   )
 }

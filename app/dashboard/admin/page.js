@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
 import { motion } from 'framer-motion'
-import DashboardLayout from '@/components/layout/DashboardLayout'
 import AdminPanel from '@/components/admin/AdminPanel'
 import GlassCard from '@/components/ui/GlassCard'
 import { useAuth } from '@/context/AuthContext'
@@ -37,38 +35,32 @@ export default function AdminPage() {
 
   if (profile && !profile.is_admin) {
     return (
-      <DashboardLayout>
-        <Head><title>Admin - Moodify</title></Head>
-        <div className="max-w-xl mx-auto">
-          <GlassCard className="p-8 text-center">
-            <div className="text-6xl mb-4">🔒</div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Access Denied</h2>
-            <p className="text-gray-600 dark:text-gray-400">You do not have permission to access the admin panel.</p>
-          </GlassCard>
-        </div>
-      </DashboardLayout>
+      <div className="max-w-xl mx-auto">
+        <GlassCard className="p-8 text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">Access Denied</h2>
+          <p className="text-gray-600 dark:text-gray-400">You do not have permission to access the admin panel.</p>
+        </GlassCard>
+      </div>
     )
   }
 
   return (
-    <DashboardLayout>
-      <Head><title>Admin Panel - Moodify</title></Head>
-      <div className="space-y-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Admin Panel</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">View platform statistics and trends</p>
-        </div>
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-4xl animate-spin">⚙️</div>
-            <p className="text-gray-500 mt-4">Loading statistics...</p>
-          </div>
-        ) : (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <AdminPanel stats={stats} />
-          </motion.div>
-        )}
+    <div className="space-y-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Admin Panel</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">View platform statistics and trends</p>
       </div>
-    </DashboardLayout>
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="text-4xl animate-spin">⚙️</div>
+          <p className="text-gray-500 mt-4">Loading statistics...</p>
+        </div>
+      ) : (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <AdminPanel stats={stats} />
+        </motion.div>
+      )}
+    </div>
   )
 }
